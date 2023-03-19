@@ -8,14 +8,19 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import com.example.callforinternet.R
+import com.example.callforinternet.app.App
 import com.example.callforinternet.data.repository.UserRepositoryImpl
 import com.example.callforinternet.data.storage.SharedStorage
 import com.example.callforinternet.data.storage.SharedUserStorage
 import com.example.callforinternet.domain.model.SaveUserNameParam
 import com.example.callforinternet.domain.usecase.GetUserUseCase
 import com.example.callforinternet.domain.usecase.SaveUserUseCase
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var vmFactory: MainActivityViewModelFactory
 
     private lateinit var viewModel: MainActivityViewModel
 
@@ -23,10 +28,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProvider(
-            this,
-            MainActivityViewModelFactory(this)
-        ).get(MainActivityViewModel::class.java)
+        (applicationContext as App).appComponent.inject(this)
+        viewModel = ViewModelProvider(this, vmFactory)[MainActivityViewModel::class.java]
 
         val dataTextView = findViewById<TextView>(R.id.tv1)
         val dataEditView = findViewById<EditText>(R.id.etData)
